@@ -1,0 +1,42 @@
+version: "3"
+
+networks:
+  app:
+    driver: bridge
+  db:
+    driver: bridge
+
+services:
+  docker-2-nginx:
+    build: ./nginx
+    container_name: docker-2-nginx
+    depends_on:
+      - docker-2-node
+    networks:
+      - app
+    ports:
+      - 8080:80
+
+  docker-2-node:
+    build: ./node
+    container_name: docker-2-node
+    depends_on:
+      - docker-2-mysql
+    networks:
+      - app
+      - db
+    volumes:
+      - ./node:/home/node/app
+      - /home/node/app/node_modules
+
+  docker-2-mysql:
+    command: --innodb-use-native-aio=0
+    container_name: docker-2-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    image: mysql:5.7
+    networks:
+      - db
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d
+      - ./dbdata:/var/lib/mysql

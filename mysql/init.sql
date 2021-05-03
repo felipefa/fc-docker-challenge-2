@@ -1,0 +1,5 @@
+CREATE DATABASE docker;
+
+USE docker;
+
+CREATE TABLE IF NOT EXISTS people (name VARCHAR(255));
